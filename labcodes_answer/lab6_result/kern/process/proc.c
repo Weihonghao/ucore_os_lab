@@ -499,7 +499,7 @@ do_exit(int error_code) {
         }
     }
     local_intr_restore(intr_flag);
-    
+    cprintf("Call schedule()\n");
     schedule();
     panic("do_exit will not return!! %d.\n", current->pid);
 }
@@ -734,6 +734,7 @@ repeat:
     if (haskid) {
         current->state = PROC_SLEEPING;
         current->wait_state = WT_CHILD;
+        cprintf("Call schedule()\n");
         schedule();
         if (current->flags & PF_EXITING) {
             do_exit(-E_KILLED);
@@ -832,6 +833,7 @@ init_main(void *arg) {
     }
 
     while (do_wait(0, NULL) == 0) {
+        cprintf("Call schedule()\n");
         schedule();
     }
 
@@ -887,6 +889,7 @@ void
 cpu_idle(void) {
     while (1) {
         if (current->need_resched) {
+            cprintf("Call schedule()\n");
             schedule();
         }
     }
